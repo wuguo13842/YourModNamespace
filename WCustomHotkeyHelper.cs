@@ -109,12 +109,36 @@ namespace YourModNamespace //修改与你的 ModBehaviour.cs空间名相同
 		#region 按键初始化维护与更新
 		public static void RegisterAndNotifyHotkeys()
 		{
+			// 语言检测逻辑
+			SystemLanguage[] chineseLanguages = {
+				SystemLanguage.Chinese,
+				SystemLanguage.ChineseSimplified,
+				SystemLanguage.ChineseTraditional
+			};
+			bool isChinese = Array.Exists(chineseLanguages, lang => lang == Application.systemLanguage);
+			
 			var configs = new[]
 			{
-				new HotkeyConfig { Id = "AttackKey", DefaultValue = "<Keyboard>/r", DisplayName = "攻击" },
-				new HotkeyConfig { Id = "JumpKey", DefaultValue = "Key.Space", DisplayName = "跳跃" },
-				new HotkeyConfig { Id = "UseKey", DefaultValue = "KeyCode.E", DisplayName = "使用" },
-				new HotkeyConfig { Id = "ReloadKey", DefaultValue = "<Keyboard>/t", DisplayName = "装弹" }
+				new HotkeyConfig { 
+					Id = "AttackKey", 
+					DefaultValue = "<Keyboard>/r", 
+					DisplayName = isChinese ? "攻击" : "Attack" 
+				},
+				new HotkeyConfig { 
+					Id = "JumpKey", 
+					DefaultValue = "Key.Space", 
+					DisplayName = isChinese ? "跳跃" : "Jump" 
+				},
+				new HotkeyConfig { 
+					Id = "UseKey", 
+					DefaultValue = "KeyCode.E", 
+					DisplayName = isChinese ? "使用" : "Use" 
+				},
+				new HotkeyConfig { 
+					Id = "ReloadKey", 
+					DefaultValue = "<Keyboard>/t", 
+					DisplayName = isChinese ? "装弹" : "Reload" 
+				}
 			};
 			
 			foreach (var config in configs)
