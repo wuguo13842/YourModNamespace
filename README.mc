@@ -1,16 +1,34 @@
+WCustomHotkeyHelper.cs 关键示例总结
+核心功能
+1.热键管理桥梁：连接Mod与WCustomHotkey.dll系统
+2.双重存储：优先API存储，失败时使用本地文件备份
+3.统一事件：OnHotkeyUpdate事件简化热键更新通知
+
+关键机制
+1.自动容错：API不可用时自动切换到本地配置
+2.生命周期管理：Initialize()初始化，Cleanup()清理
+3.配置持久化：热键保存在[ModName]_WHotkeyConfig.txt
+
+三个核心API
+1.RegisterHotkey()：注册热键到系统
+2.GetHotkey()：获取热键值并触发更新事件
+3.事件处理：监听WCustomHotkey系统变更并同步
+
+设计特点
+·静态类，无需实例化
+·与ModBehaviour松耦合
+·支持多种热键格式（InputSystem和KeyCode）
+
+
 WCustomHotkey 系统使用文档
 📋 概述
 WCustomHotkey 是一个 Unity Mod 热键管理系统，提供完整的热键注册、绑定、存储和事件通知功能。
 
 🎯 核心特性
 ✅ 支持多种热键格式（Key、KeyCode、Keyboard）
-
 ✅ 可视化 UI 绑定界面
-
 ✅ 自动配置文件保存
-
 ✅ 实时热键变化事件通知
-
 ✅ 与 Unity Input System 集成
 
 🔧 API 参考
@@ -311,14 +329,11 @@ void OnDisable() => UnsubscribeEvents();
 // ❌ 错误：忘记取消订阅导致内存泄漏
 2. 线程安全
 事件可能在任意线程触发
-
 UI操作需要确保在主线程执行
 
 3. 性能建议
 避免在事件处理中做耗时操作
-
 使用缓存减少重复转换
-
 批量更新UI而不是单个更新
 
 4. 错误处理
@@ -377,33 +392,15 @@ void OnDestroy()
 }
 🎯 最佳实践
 使用 RegisterHotkeyWithAction：一次性完成注册和绑定
-
 监听 OnHotkeyChanged 事件：实时响应配置变化
-
 使用 HotkeyConverter：统一格式转换
-
 配对订阅和取消：防止内存泄漏
-
 提供合理的默认值：增强健壮性
-
-📞 技术支持
-如果遇到问题：
-
-检查日志文件：WCustomHotkey_*.log
-
-确认 Mod 是否初始化成功
-
-验证热键格式是否正确
-
-检查事件订阅是否正确配对
 
 📈 版本兼容性
 Unity 2020.3+ ✅
-
 Unity Input System 1.3+ ✅
-
 .NET Framework 4.7.2+ ✅
-
 支持多Mod同时使用 ✅
 
 文档版本：v1.0
