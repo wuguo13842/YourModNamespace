@@ -13,12 +13,14 @@ namespace YourModNamespace
         
         void Awake()
         {
-            // 1. 初始化WCustomHotkey系统
-            // 注意：Initialize()内部已经调用了RegisterAndNotifyHotkeys()
-            WCustomHotkeyHelper.Initialize();
-            
-            // 2. 订阅统一事件
-            WCustomHotkeyHelper.OnHotkeyUpdate += OnHotkeyUpdate;
+			#region 这两个一定是这个顺序
+				// 1. 订阅统一事件
+				WCustomHotkeyHelper.OnHotkeyUpdate += OnHotkeyUpdate;
+				
+				// 2. 初始化WCustomHotkey系统
+				// 注意：Initialize()内部已经调用了RegisterAndNotifyHotkeys()
+				WCustomHotkeyHelper.Initialize();
+			#endregion
 		}
 		
         void OnEnable()
