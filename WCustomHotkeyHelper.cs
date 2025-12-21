@@ -11,7 +11,10 @@ namespace YourModNamespace //修改与你的 ModBehaviour.cs空间名相同
     {
 		// ============ 配置部分 ============
 		private static readonly string MOD_NAME = typeof(ModBehaviour).Namespace;
-		private static string localConfigPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"{MOD_NAME}_WHotkeyConfig.txt");
+		// 回退本地存档位置  选其中一个
+		private static string localConfigPath = Path.Combine(SavesSystem.GetFullPathToSavesFolder(), "WCustomHotkeyConfig",  $"{MOD_NAME}.txt"); // 游戏存档目录WCustomHotkeyConfig文件夹里
+		// private static string localConfigPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"{MOD_NAME}_WHotkeyConfig.txt"); // mod文件夹根目录下txt文件
+		
 		
         // ============ 事件 ============
         public static event Action<string, string> OnHotkeyUpdate;
