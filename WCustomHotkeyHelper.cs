@@ -1,4 +1,5 @@
 using System;
+using Saves;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -11,10 +12,8 @@ namespace YourModNamespace //修改与你的 ModBehaviour.cs空间名相同
     {
 		// ============ 配置部分 ============
 		private static readonly string MOD_NAME = typeof(ModBehaviour).Namespace;
-		// 回退本地存档位置  选其中一个
-		private static string localConfigPath = Path.Combine(SavesSystem.GetFullPathToSavesFolder(), "WCustomHotkeyConfig",  $"{MOD_NAME}.txt"); // 游戏存档目录WCustomHotkeyConfig文件夹里
-		// private static string localConfigPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"{MOD_NAME}_WHotkeyConfig.txt"); // mod文件夹根目录下txt文件
-		
+		private static string configDir = Path.Combine(SavesSystem.GetFullPathToSavesFolder(), "WCustomHotkeyConfig");
+		private static string localConfigPath = Path.Combine(configDir, $"{MOD_NAME}.txt");
 		
         // ============ 事件 ============
         public static event Action<string, string> OnHotkeyUpdate;
@@ -200,12 +199,12 @@ namespace YourModNamespace //修改与你的 ModBehaviour.cs空间名相同
 				private static void SaveLocalConfig(string saveName, string hotkeyString)
 				{
 					try
-					{
+					{ 
 						// 如果文件不存在，直接创建
 						if (!File.Exists(localConfigPath))
 						{
+							Directory.CreateDirectory(configDir);
 							File.WriteAllText(localConfigPath, $"{saveName}={hotkeyString ?? string.Empty}");
-							return;
 						}
 						
 						// 读取文件所有行
@@ -270,7 +269,6 @@ namespace YourModNamespace //修改与你的 ModBehaviour.cs空间名相同
 							if (parts.Length == 2 && parts[0].Trim() == saveName)
 							{
 								string hotkeyString = parts[1].Trim();
-								OnHotkeyUpdate?.Invoke(saveName, hotkeyString);
 								return hotkeyString;
 							}
 						}
@@ -306,7 +304,7 @@ namespace YourModNamespace //修改与你的 ModBehaviour.cs空间名相同
 			/// <returns>热键值的原始字符串</returns>
 			public static string GetHotkey(string saveName)
 			{
-				 string hotkeyString = string.Empty;
+				string hotkeyString = string.Empty;
 				
 				// 1. 优先从WCustomHotkey API获取
 				if (isWCustomHotkeyAvailable)
@@ -322,7 +320,9 @@ namespace YourModNamespace //修改与你的 ModBehaviour.cs空间名相同
 						return hotkeyString;
 					}
 				}
-				return LoadLocalConfig(saveName);
+				hotkeyString = LoadLocalConfig(saveName);
+				OnHotkeyUpdate?.Invoke(saveName, hotkeyString);
+				return hotkeyString;
 			}
 		#endregion - 配套与回退
     }
